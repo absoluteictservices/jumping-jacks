@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { checkPassword, createSessionCookie, destroySessionCookie, isAuthenticated } from "@/lib/auth";
 import { parsePoundsToPence } from "@/lib/money";
-import { dateKeyToUTCDate } from "@/lib/dates";
+import { dateKeyToUTCDate, dbDateToKey, formatDisplay } from "@/lib/dates";
 import { CATALOGUE, CANCELLATION_POLICY } from "@/lib/catalogue";
+import { nextInvoiceNumber, type LineItem } from "@/lib/invoices";
 
 function slugify(s: string) {
   return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -147,7 +148,88 @@ function settingsFromForm(formData: FormData) {
     companyEmail: String(formData.get("companyEmail") ?? "").trim() || "info@jumpingjacksleeds.co.uk",
     companyPhone: String(formData.get("companyPhone") ?? "").trim() || "07769781666",
     cancellationPolicy: String(formData.get("cancellationPolicy") ?? "").trim(),
+    companyAddress: String(formData.get("companyAddress") ?? "").trim(),
   };
+}
+
+// ── Invoices ────────────────────────────────────────────────
+export async function createInvoiceFromBooking(formData: FormData) {
+  guard();
+  const bookingId = String(formData.get("bookingId"));
+  const existing = await prisma.invoice.findUnique({ where: { bookingId } });
+  if (existing) redirect(`/admin/invoices/${existing.id}`);
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: { inflatable: true },
+  });
+  if (!booking) redirect("/admin/bookings");
+
+  const lineItems: LineItem[] = [
+    {
+      description: `${booking.inflatable.name} — full day hire on ${formatDisplay(dbDateToKey(booking.date))}`,
+      amountPence: booking.totalPence,
+    },
+  ];
+  const invoice = await prisma.invoice.create({
+    data: {
+      number: await nextInvoiceNumber(),
+      customerName: booking.customerName,
+      email: booking.email,
+      phone: booking.phone,
+      address: `${booking.deliveryAddress}, ${booking.deliveryPostcode}`,
+      lineItems,
+      totalPence: booking.totalPence,
+      bookingId: booking.id,
+    },
+  });
+  revalidatePath("/admin/invoices");
+  redirect(`/admin/invoices/${invoice.id}`);
+}
+
+export async function createCustomInvoice(formData: FormData) {
+  guard();
+  let items: LineItem[] = [];
+  try {
+    const parsed = JSON.parse(String(formData.get("lineItems") ?? "[]"));
+    if (Array.isArray(parsed)) {
+      items = parsed
+        .map((x) => ({
+          description: String(x?.description ?? "").trim(),
+          amountPence: parsePoundsToPence(String(x?.amount ?? "")) ?? 0,
+        }))
+        .filter((x) => x.description !== "");
+    }
+  } catch {
+    items = [];
+  }
+  if (items.length === 0) {
+    items = [{ description: "Bouncy castle hire", amountPence: 0 }];
+  }
+  const total = items.reduce((s, i) => s + i.amountPence, 0);
+
+  const invoice = await prisma.invoice.create({
+    data: {
+      number: await nextInvoiceNumber(),
+      customerName: String(formData.get("customerName") ?? "Customer").trim() || "Customer",
+      email: emptyToNull(formData.get("email")),
+      phone: emptyToNull(formData.get("phone")),
+      address: emptyToNull(formData.get("address")),
+      lineItems: items,
+      totalPence: total,
+      notes: emptyToNull(formData.get("notes")),
+    },
+  });
+  revalidatePath("/admin/invoices");
+  redirect(`/admin/invoices/${invoice.id}`);
+}
+
+export async function deleteInvoice(formData: FormData) {
+  guard();
+  const id = String(formData.get("id"));
+  await prisma.invoice.delete({ where: { id } }).catch(() => {});
+  revalidatePath("/admin/invoices");
+  redirect("/admin/invoices");
 }
 
 function emptyToNull(v: FormDataEntryValue | null): string | null {

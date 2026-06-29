@@ -9,6 +9,7 @@ export const DEFAULT_SETTINGS = {
   companyPhone: "07769781666",
   holdMinutes: 15,
   cancellationPolicy: "",
+  companyAddress: "",
 };
 
 export type AppSettings = typeof DEFAULT_SETTINGS;

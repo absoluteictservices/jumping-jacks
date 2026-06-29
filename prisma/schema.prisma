@@ -85,5 +85,25 @@ model Settings {
   companyPhone            String   @default("07769781666")
   holdMinutes             Int      @default(15)
   cancellationPolicy      String   @default("")
+  companyAddress          String   @default("")
   updatedAt               DateTime @updatedAt
+}
+
+// Invoices — one per booking (auto) and/or custom one-off invoices. No VAT.
+model Invoice {
+  id           String   @id @default(cuid())
+  number       Int      @unique
+  issuedAt     DateTime @default(now())
+  customerName String
+  email        String?
+  phone        String?
+  address      String?
+  // lineItems: array of { description: string, amountPence: number }
+  lineItems    Json
+  totalPence   Int
+  notes        String?
+  bookingId    String?  @unique
+  createdAt    DateTime @default(now())
+
+  @@index([issuedAt])
 }

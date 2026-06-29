@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { releaseExpiredHolds } from "@/lib/availability.server";
 import { formatDisplay, dbDateToKey } from "@/lib/dates";
 import { formatGBP } from "@/lib/money";
-import { cancelBooking } from "../actions";
+import { cancelBooking, createInvoiceFromBooking } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -81,12 +81,18 @@ export default async function AdminBookings({ searchParams }: { searchParams: { 
                     <span className={`rounded-full px-2 py-1 text-xs font-bold ${STATUS_STYLE[b.status]}`}>{b.status}</span>
                   </td>
                   <td className="px-3 py-2">
-                    {b.status !== "cancelled" && (
-                      <form action={cancelBooking}>
-                        <input type="hidden" name="id" value={b.id} />
-                        <button className="text-xs font-bold text-red-600 hover:underline">Cancel</button>
+                    <div className="flex flex-col gap-1">
+                      <form action={createInvoiceFromBooking}>
+                        <input type="hidden" name="bookingId" value={b.id} />
+                        <button className="text-xs font-bold text-brand-purple hover:underline">Invoice</button>
                       </form>
-                    )}
+                      {b.status !== "cancelled" && (
+                        <form action={cancelBooking}>
+                          <input type="hidden" name="id" value={b.id} />
+                          <button className="text-xs font-bold text-red-600 hover:underline">Cancel</button>
+                        </form>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

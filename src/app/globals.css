@@ -50,3 +50,23 @@ h1, h2, h3, h4 {
     @apply inline-flex items-center rounded-full bg-brand-violet/10 px-3 py-1 text-sm font-bold text-brand-purple;
   }
 }
+
+/* When printing an invoice: show only the .print-area, hide everything else. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

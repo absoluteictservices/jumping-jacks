@@ -55,6 +55,12 @@ export default async function AdminSettings({ searchParams }: { searchParams: { 
         </div>
 
         <div>
+          <label htmlFor="companyAddress" className="block text-sm font-bold text-brand-ink/80">Company address (shown on invoices)</label>
+          <textarea id="companyAddress" name="companyAddress" rows={3} defaultValue={s.companyAddress}
+            className="mt-1 w-full rounded-xl border border-black/10 px-3 py-2" placeholder="e.g. 12 Example Street, Leeds, LS1 1AA" />
+        </div>
+
+        <div>
           <label htmlFor="cancellationPolicy" className="block text-sm font-bold text-brand-ink/80">Cancellation policy text</label>
           <textarea id="cancellationPolicy" name="cancellationPolicy" rows={5} defaultValue={s.cancellationPolicy}
             className="mt-1 w-full rounded-xl border border-black/10 px-3 py-2" />

@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 const ADMIN_NAV = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/bookings", label: "Bookings" },
+  { href: "/admin/invoices", label: "Invoices" },
+  { href: "/admin/customers", label: "Customers" },
   { href: "/admin/inflatables", label: "Inflatables" },
   { href: "/admin/blackouts", label: "Blackout dates" },
   { href: "/admin/settings", label: "Settings" },
