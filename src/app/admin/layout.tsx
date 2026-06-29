@@ -30,9 +30,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <button className="btn-secondary !py-2 text-sm">Log out</button>
         </form>
       </div>
-      <nav className="mt-4 flex flex-wrap gap-2 border-b border-black/10 pb-3">
+      <nav className="-mx-4 mt-4 flex gap-2 overflow-x-auto border-b border-black/10 px-4 pb-3 sm:mx-0 sm:flex-wrap sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {ADMIN_NAV.map((l) => (
-          <Link key={l.href} href={l.href} className="rounded-full px-4 py-2 text-sm font-bold text-brand-ink/70 hover:bg-brand-violet/10 hover:text-brand-purple">
+          <Link
+            key={l.href}
+            href={l.href}
+            className="shrink-0 whitespace-nowrap rounded-full bg-brand-violet/5 px-4 py-2 text-sm font-bold text-brand-ink/70 hover:bg-brand-violet/15 hover:text-brand-purple"
+          >
             {l.label}
           </Link>
         ))}
