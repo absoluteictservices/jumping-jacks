@@ -9,8 +9,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-white/90 backdrop-blur">
       <div className="container-x flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2" aria-label={`${SITE.name} home`}>
-          <span className="grid h-9 w-9 place-items-center rounded-2xl bg-brand-pink text-lg font-extrabold text-white">J</span>
+        <Link href="/" className="flex items-center gap-2.5" aria-label={`${SITE.name} home`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Jumping Jacks Leeds — bouncy castle hire" className="h-11 w-auto" />
           <span className="font-display text-lg font-extrabold leading-none text-brand-purple">
             Jumping Jacks<span className="block text-[11px] font-bold text-brand-ink/50">Leeds</span>
           </span>
