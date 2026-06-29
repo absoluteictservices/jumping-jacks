@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Jumping Jacks Leeds — Interactive Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--purple:#6C4AB6;--violet:#8D72E1;--pink:#FF5DA2;--yellow:#FFD23F;--sky:#34C6F4;--green:#3DD68C;--ink:#1F1147;}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:#fff;}
+h1,h2,h3,h4{font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;letter-spacing:-.01em;margin:0}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;border-radius:999px;padding:12px 22px;font-weight:800;font-family:inherit;font-size:15px;transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--pink);color:#fff;box-shadow:0 14px 30px -12px rgba(255,93,162,.7)}
+.btn-sun{background:var(--yellow);color:var(--ink)}
+.btn-ghost{background:#fff;color:var(--purple);border:2px solid rgba(108,74,182,.18)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.card{background:#fff;border-radius:26px;box-shadow:0 10px 30px -15px rgba(31,17,71,.25);border:1px solid rgba(0,0,0,.05)}
+.chip{display:inline-flex;align-items:center;background:rgba(141,114,225,.12);color:var(--purple);font-weight:800;font-size:13px;padding:5px 12px;border-radius:999px}
+.demobar{background:var(--ink);color:#fff;font-size:13px;padding:8px 0}
+.demobar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.demobar b{color:var(--yellow)}
+.demobar button{background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer;font-family:inherit}
+header.nav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,.06)}
+header.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Baloo 2';font-weight:800;color:var(--purple);font-size:18px}
+.logo .b{width:34px;height:34px;border-radius:12px;background:var(--pink);color:#fff;display:grid;place-items:center;font-size:18px}
+.navlinks{display:flex;gap:20px;font-weight:700}
+.navlinks a{color:rgba(31,17,71,.8)}
+.navlinks a:hover{color:var(--purple)}
+@media(max-width:760px){.navlinks{display:none}}
+.hero{background:linear-gradient(135deg,var(--purple),var(--violet) 55%,var(--pink));color:#fff;position:relative;overflow:hidden}
+.hero .wrap{padding:56px 18px}
+.dotty{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.22) 2px,transparent 2px);background-size:24px 24px;opacity:.5}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.04;max-width:14ch}
+.hero p{font-size:18px;max-width:46ch;opacity:.95;margin-top:14px}
+.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.imgwrap{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden}
+.imgwrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+.ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:10px}
+.ph span{font-family:'Baloo 2';font-weight:800;color:#fff;font-size:22px;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.castle .body{padding:16px}
+.castle h3{font-size:19px}
+.price{font-family:'Baloo 2';font-weight:800;color:var(--purple);font-size:18px}
+.muted{color:rgba(31,17,71,.55)}
+.section{padding:46px 0}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .dow{text-align:center;font-size:12px;font-weight:800;color:rgba(31,17,71,.45);padding:4px 0}
+.day{aspect-ratio:1;border:0;border-radius:12px;font-weight:800;font-family:inherit;font-size:14px;cursor:pointer}
+.day.avail{background:rgba(61,214,140,.18);color:var(--ink)}
+.day.avail:hover{background:rgba(61,214,140,.4)}
+.day.sel{background:var(--pink);color:#fff;box-shadow:0 8px 18px -8px rgba(255,93,162,.8)}
+.day.off{background:rgba(0,0,0,.04);color:rgba(0,0,0,.25);text-decoration:line-through;cursor:not-allowed}
+.calhead{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 14px}
+.calnav{width:38px;height:38px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:#fff;cursor:pointer;font-size:18px}
+.calnav[disabled]{opacity:.3;cursor:not-allowed}
+.legend{display:flex;gap:16px;font-size:12px;color:rgba(31,17,71,.6);margin-top:12px;flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+label{display:block;font-weight:800;font-size:14px;color:rgba(31,17,71,.8);margin-bottom:4px}
+input,textarea,select{width:100%;border:1px solid rgba(0,0,0,.12);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:15px}
+input:focus,textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(108,74,182,.2)}
+.formgrid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.formgrid .full{grid-column:1/-1}
+.err{background:#fee2e2;color:#b91c1c;font-weight:800;font-size:14px;border-radius:12px;padding:8px 12px;margin-top:10px}
+.ok{background:rgba(61,214,140,.18);color:#15803d;font-weight:800;font-size:14px;border-radius:12px;padding:8px 12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tabs a{padding:8px 16px;border-radius:999px;font-weight:800;font-size:14px;background:rgba(141,114,225,.12);color:var(--purple)}
+.tabs a.on{background:var(--purple);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;color:rgba(31,17,71,.5);font-weight:800;padding:8px;border-bottom:1px solid rgba(0,0,0,.1)}
+td{padding:8px;border-bottom:1px solid rgba(0,0,0,.05);vertical-align:top}
+.tag{border-radius:999px;padding:2px 8px;font-size:12px;font-weight:800}
+.tag.paid{background:rgba(61,214,140,.2);color:#15803d}
+.tag.held{background:rgba(255,210,63,.35);color:#92700e}
+.tag.cancelled{background:rgba(0,0,0,.06);color:rgba(0,0,0,.4);text-decoration:line-through}
+.link{color:var(--purple);font-weight:800;cursor:pointer;background:none;border:0;font-family:inherit;font-size:inherit;padding:0}
+footer{background:var(--ink);color:rgba(255,255,255,.8);margin-top:50px;padding:30px 0;font-size:14px}
+.breadcrumb{font-size:13px;color:rgba(31,17,71,.5);margin:14px 0}
+.stat{padding:16px}
+.stat .n{font-family:'Baloo 2';font-weight:800;font-size:26px}
+.banner{background:linear-gradient(135deg,var(--sky),var(--violet));color:#fff;border-radius:30px;padding:34px;text-align:center;position:relative;overflow:hidden}
+</style>
+</head>
+<body>
+<div class="demobar"><div class="wrap">
+  <span>🎪 <b>DEMO MODE</b> — sample data, no real payments or emails. Try booking a date, then watch the calendar block it.</span>
+  <button onclick="resetDemo()">↺ Reset demo data</button>
+</div></div>
+<header class="nav"><div class="wrap">
+  <a class="logo" href="#/"><span class="b">J</span><span>Jumping Jacks<br><small style="font-size:11px;color:rgba(31,17,71,.5)">Leeds</small></span></a>
+  <nav class="navlinks">
+    <a href="#/">Home</a><a href="#/castles">Bouncy Castles</a><a href="#/admin">Owner Admin</a>
+  </nav>
+  <a class="btn btn-primary" style="padding:8px 18px;font-size:14px" href="#/castles">Book Now</a>
+</div></header>
+<div id="app"></div>
+<footer><div class="wrap">© Jumping Jacks Leeds — interactive demo. Fun Bouncy Castle Hire in Leeds · 07769 781666</div></footer>
+
+<script>
+const DEMO_PRODUCTS = [{"id": "c1", "name": "Spider-Man Castle", "slug": "spider-man-castle", "description": "A bright Spider-Man themed bouncy castle that is perfect for superhero parties and energetic younger children. A great all-round option for gardens, parties and local events.", "theme": "Superhero", "ageSuitability": "Up to 12 years", "pricePence": 8000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-12.55.211.jpeg", "active": true, "sortOrder": 1}, {"id": "c2", "name": "Super Hero's Castle", "slug": "super-hero-s-castle", "description": "A fun superhero themed bouncy castle with bold colours and a side slide section, ideal for children who want something more exciting than a standard castle. Great for birthdays, school events and family parties.", "theme": "Superhero", "ageSuitability": "Up to 12 years", "pricePence": 8000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.46.jpeg", "active": true, "sortOrder": 2}, {"id": "c3", "name": "Sea-Life Castle", "slug": "sea-life-castle", "description": "A colourful sea-life themed bouncy castle with an under-the-sea design that works well for younger children. A popular choice for mixed parties and general children's entertainment.", "theme": "Sea Life", "ageSuitability": "Up to 12 years", "pricePence": 8000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-12.55.212.jpeg", "active": true, "sortOrder": 3}, {"id": "c4", "name": "Frozen Castle", "slug": "frozen-castle", "description": "A Frozen themed inflatable that is ideal for princess parties and younger children who love character-themed inflatables. Bright, eye-catching and well suited to birthdays and indoor or outdoor use where space allows.", "theme": "Princess", "ageSuitability": "Up to 12 years", "pricePence": 8000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.322.jpeg", "active": true, "sortOrder": 4}, {"id": "c5", "name": "Tik Tok Castle", "slug": "tik-tok-castle", "description": "A Tik Tok themed bouncy castle designed for younger children. A simple and popular option for birthday parties, family gatherings and smaller events.", "theme": "Disco", "ageSuitability": "Up to 12 years", "pricePence": 12000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.39.jpeg", "active": true, "sortOrder": 5}, {"id": "c6", "name": "Pink / Purple Castle", "slug": "pink-purple-castle", "description": "A classic pink and purple bouncy castle that is perfect for birthdays, family celebrations and general children's parties. Velcro theme attachments may be available on request, making it a flexible option for different party themes.", "theme": "Girls", "ageSuitability": "Up to 12 years", "pricePence": 8000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-12.55.20.jpeg", "active": true, "sortOrder": 6}, {"id": "c7", "name": "Nerf Battle Zone", "slug": "nerf-battle-zone", "description": "An interactive Nerf themed inflatable game that is great for competitive fun at children's parties and events. Supplied with Nerf guns, making it a good add-on or lower-cost standalone hire option.", "theme": "Nerf", "ageSuitability": "Ages 5+", "pricePence": 7000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.43.jpeg", "active": true, "sortOrder": 7}, {"id": "c8", "name": "Barbie Castle", "slug": "barbie-castle", "description": "Barbie disco castle", "theme": "Princess", "ageSuitability": "Up to 12 years", "pricePence": 12000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.41.jpeg", "active": true, "sortOrder": 8}, {"id": "c9", "name": "Party Time Slide / Disco Combo", "slug": "party-time-slide-disco-combo", "description": "A party-themed inflatable combo unit with bouncing area and front slide, designed to give children more to do than a standard castle. Includes disco ball and speaker / Bluetooth speaker, making it ideal for lively birthday parties.", "theme": "Disco", "ageSuitability": "Up to 12 years", "pricePence": 12000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.33.jpeg", "active": true, "sortOrder": 9}, {"id": "c10", "name": "K Pop Disco Castle", "slug": "k-pop-disco-castle", "description": "A pink and purple combo castle with slide, offering both bounce and slide fun in one inflatable. Includes Bluetooth speaker and disco ball, and theme artwork can be added on selected hires.", "theme": "Disco", "ageSuitability": "Up to 12 years", "pricePence": 12000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-12.55.20.jpeg", "active": true, "sortOrder": 10}, {"id": "c11", "name": "Purple Bounce and Slide Package", "slug": "purple-bounce-and-slide-package", "description": "A larger package option combining a purple bounce castle and matching purple slide for bigger parties or where more than one inflatable is wanted. Ideal for larger birthdays, family parties and events where children of different ages will be attending.", "theme": "Slide & Bounce", "ageSuitability": "Up to 12 years", "pricePence": 17500, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-12.55.07.jpeg", "active": true, "sortOrder": 11}, {"id": "c12", "name": "Red / Black Mega Slide", "slug": "red-black-mega-slide", "description": "A tall inflatable slide in bold red and black colours, perfect for bigger parties, events and children who want a more exciting feature inflatable. A standout piece that works well as the main attraction.", "theme": "Slide & Bounce", "ageSuitability": "Up to 12 years", "pricePence": 20000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-12.55.221.jpeg", "active": true, "sortOrder": 12}, {"id": "c13", "name": "Dragon Castle with Slide", "slug": "dragon-castle-with-slide", "description": "A themed dragon inflatable with bounce area and attached slide, giving children a more adventurous and eye-catching party option. Great for birthdays, fun days and events where you want something a little different.", "theme": "Adventure", "ageSuitability": "Up to 12 years", "pricePence": 14000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-07-at-12.55.22.jpeg", "active": true, "sortOrder": 13}, {"id": "c14", "name": "10ft Hyper Slide", "slug": "10ft-hyper-slide", "description": "10ft Hyper Slide, perfect for children of all ages!", "theme": "Slide & Bounce", "ageSuitability": "Up to 12 years", "pricePence": 15000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.36.jpeg", "active": true, "sortOrder": 14}, {"id": "c15", "name": "Disco Dome With Slide", "slug": "disco-dome-with-slide", "description": "Disco Dome With Slide, perfect for children of all ages!", "theme": "Disco", "ageSuitability": "Up to 12 years", "pricePence": 15000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.34.jpeg", "active": true, "sortOrder": 15}, {"id": "c16", "name": "Dance and Bounce Adult Castle", "slug": "dance-and-bounce-adult-castle", "description": "Great fun, aimed more at adults than children, comes with Bluetooth speaker", "theme": "Adult", "ageSuitability": "Teens & adults", "pricePence": 12000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.343.jpeg", "active": true, "sortOrder": 16}, {"id": "c17", "name": "My Little Pony Castle", "slug": "my-little-pony-castle", "description": "My little pony children's castle", "theme": "Character", "ageSuitability": "Up to 12 years", "pricePence": 8000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.335.jpeg", "active": true, "sortOrder": 17}, {"id": "c18", "name": "Party Time Kids Slide", "slug": "party-time-kids-slide", "description": "Party Time Kids Slide available to hire from Jumping Jacks Leeds.", "theme": "Slide & Bounce", "ageSuitability": "Up to 12 years", "pricePence": 9000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/04/WhatsApp-Image-2026-04-15-at-21.04.352.jpeg", "active": true, "sortOrder": 18}, {"id": "c19", "name": "10ft Slide and Nerf Package", "slug": "10ft-slide-and-nerf-package", "description": "Package deal", "theme": "Nerf", "ageSuitability": "Ages 5+", "pricePence": 20000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.371.jpeg", "active": true, "sortOrder": 19}, {"id": "c20", "name": "Party Time and Nerf Package", "slug": "party-time-and-nerf-package", "description": "2 package", "theme": "Nerf", "ageSuitability": "Ages 5+", "pricePence": 17000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/03/WhatsApp-Image-2026-04-15-at-21.04.33.jpeg", "active": true, "sortOrder": 20}, {"id": "c21", "name": "Bluetooth Speaker", "slug": "bluetooth-speaker", "description": "NOTE \n\\n\n\\n \n\\n\n\\nONLY AVAILABLE AS AN ADD ON, NEEDS TO BE PACKAGED WITH A CASTLE", "theme": "Add-on", "ageSuitability": null, "pricePence": 2000, "image": "https://jumpingjacksleeds.co.uk/wp-content/uploads/2026/04/WhatsApp-Image-2026-04-15-at-21.40.34.jpeg", "active": false, "sortOrder": 21}];
+const GRADS=['linear-gradient(135deg,#FF5DA2,#FFD23F)','linear-gradient(135deg,#34C6F4,#8D72E1)','linear-gradient(135deg,#8D72E1,#FF5DA2)','linear-gradient(135deg,#3DD68C,#34C6F4)','linear-gradient(135deg,#FFD23F,#FF5DA2)','linear-gradient(135deg,#6C4AB6,#34C6F4)'];
+const KEY='jj_demo_v2';
+const DELIVERY_TIMES=['No preference / flexible','Early morning (8–10am)','Late morning (10am–12pm)','Early afternoon (12–2pm)','Mid afternoon (2–4pm)'];
+
+/* ---------- state ---------- */
+function todayKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+function addDays(key,n){const p=key.split('-').map(Number);const d=new Date(Date.UTC(p[0],p[1]-1,p[2]));d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+function seed(){
+  const t=todayKey();
+  return {
+    inflatables:DEMO_PRODUCTS.map(p=>({...p})),
+    settings:{maxDeliveriesPerDay:1,minLeadTimeDays:1,holdMinutes:15,prefixes:['LS']},
+    bookings:[
+      {id:'demo1',castleId:'c1',date:addDays(t,5),status:'paid',customerName:'Sample Booking',email:'demo@example.com',phone:'07000 000000',postcode:'LS6 1AB',address:'12 Demo Street',deliveryTime:'Early morning (8–10am)',totalPence:8000},
+      {id:'demo2',castleId:'c4',date:addDays(t,12),status:'paid',customerName:'Sample Booking',email:'demo@example.com',phone:'07000 000000',postcode:'LS2 3CD',address:'34 Example Road',deliveryTime:'Late morning (10am–12pm)',totalPence:8000}
+    ],
+    blackouts:[addDays(t,8)]
+  };
+}
+let state;
+function load(){try{state=JSON.parse(localStorage.getItem(KEY))||seed();}catch(e){state=seed();}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function resetDemo(){state=seed();save();render();}
+load();
+
+/* ---------- availability engine (mirrors the real server logic) ---------- */
+function isActive(b){if(b.status==='cancelled')return false;if(b.status==='paid')return true;if(!b.holdExpiresAt)return true;return new Date(b.holdExpiresAt).getTime()>Date.now();}
+function dayAvail(castleId,date){
+  const s=state.settings;
+  const earliest=addDays(todayKey(),Math.max(0,s.minLeadTimeDays));
+  if(date<earliest)return{available:false,reason:'Too soon (lead time)'};
+  if(state.blackouts.includes(date))return{available:false,reason:'Blacked out'};
+  const active=state.bookings.filter(b=>b.date===date&&isActive(b));
+  if(active.some(b=>b.castleId===castleId))return{available:false,reason:'This castle is booked'};
+  if(active.length>=Math.max(1,s.maxDeliveriesPerDay))return{available:false,reason:'Daily delivery limit reached'};
+  return{available:true};
+}
+function covered(pc){const n=(pc||'').toUpperCase().replace(/\s+/g,'');return state.settings.prefixes.length===0||state.settings.prefixes.some(p=>n.startsWith(p.toUpperCase()));}
+
+/* ---------- helpers ---------- */
+function gbp(p){return p==null?'Call to book':'£'+(p/100).toFixed(p%100?2:0);}
+function bySlug(s){return state.inflatables.find(c=>c.slug===s);}
+function byId(id){return state.inflatables.find(c=>c.id===id);}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function img(c){const g=GRADS[(c.sortOrder||1)%GRADS.length];const ph='<div class="ph" style="background:'+g+'"><span>'+esc(c.name)+'</span></div>';return '<div class="imgwrap">'+ph+(c.image?'<img src="'+c.image+'" alt="'+esc(c.name)+'" onload="this.style.opacity=1" onerror="this.remove()"/>':'')+'</div>';}
+function fmtDate(key){const p=key.split('-').map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2])).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});}
+
+/* ---------- views ---------- */
+function viewHome(){
+  const cs=state.inflatables.filter(c=>c.active).slice(0,6);
+  return `
+  <section class="hero"><div class="dotty"></div><div class="wrap" style="position:relative">
+    <span class="chip" style="background:rgba(255,255,255,.15);color:#fff">⭐ 13+ years of bouncing fun in Leeds</span>
+    <h1>Fun Bouncy Castle Hire in Leeds</h1>
+    <p>Safe, clean and affordable inflatables delivered to your door across Leeds and surrounding areas. Book online in minutes.</p>
+    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn btn-sun" href="#/castles">See our castles & book</a>
+      <a class="btn btn-ghost" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)" href="#/admin">Peek at owner admin</a>
+    </div>
+  </div></section>
+  <section class="section"><div class="wrap">
+    <h2 style="font-size:30px">Popular bouncy castles</h2>
+    <p class="muted" style="margin:6px 0 22px">Tap one to check its live availability calendar.</p>
+    <div class="grid">${cs.map(castleCard).join('')}</div>
+    <div style="text-align:center;margin-top:26px"><a class="btn btn-primary" href="#/castles">View all castles</a></div>
+  </div></section>`;
+}
+function castleCard(c){
+  return `<a class="card castle" href="#/castle/${c.slug}">${img(c)}<div class="body">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">${c.theme?'<span class="chip">'+esc(c.theme)+'</span>':''}</div>
+    <h3>${esc(c.name)}</h3>
+    <div class="muted" style="font-size:13px;margin:2px 0 8px">${c.ageSuitability?esc(c.ageSuitability):''}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span class="price">${gbp(c.pricePence)}${c.pricePence!=null?'<span class="muted" style="font-size:13px"> /day</span>':''}</span>
+    </div>
+    <div class="btn btn-primary" style="width:100%;margin-top:12px;justify-content:center">Check availability</div>
+  </div></a>`;
+}
+function viewCastles(){
+  const cs=state.inflatables.filter(c=>c.active);
+  return `<section class="section"><div class="wrap">
+    <div class="breadcrumb"><a href="#/">Home</a> / Bouncy castles</div>
+    <h2 style="font-size:32px">Our bouncy castles</h2>
+    <p class="muted" style="margin:6px 0 22px">Pick a favourite and check its live availability calendar.</p>
+    <div class="grid">${cs.map(castleCard).join('')}</div>
+  </div></section>`;
+}
+
+let calMonth=null, selDate=null;
+function viewCastle(slug){
+  const c=bySlug(slug); if(!c) return '<div class="wrap section">Not found.</div>';
+  if(calMonth===null) calMonth=todayKey().slice(0,7);
+  selDate=null;
+  setTimeout(()=>renderCalendar(c.id),0);
+  return `<section class="section"><div class="wrap">
+    <div class="breadcrumb"><a href="#/castles">Bouncy castles</a> / ${esc(c.name)}</div>
+    <div style="display:grid;gap:32px;grid-template-columns:1fr 1fr" class="detailgrid">
+      <div>
+        <div class="card" style="overflow:hidden;border-radius:26px">${img(c)}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:16px">
+          ${c.theme?'<span class="chip">'+esc(c.theme)+'</span>':''}${c.ageSuitability?'<span class="chip">'+esc(c.ageSuitability)+'</span>':''}
+        </div>
+        <h1 style="font-size:34px;margin-top:12px">${esc(c.name)}</h1>
+        <div class="price" style="font-size:24px;margin-top:6px">${gbp(c.pricePence)}${c.pricePence!=null?'<span class="muted" style="font-size:15px"> /day</span>':''}</div>
+        <p style="margin-top:14px;line-height:1.6">${esc(c.description)}</p>
+        <ul class="muted" style="margin-top:14px;line-height:1.9;font-size:14px">
+          <li>✓ Delivered, set up and collected — full day hire</li>
+          <li>✓ Cleaned and safety-checked before every party</li>
+          <li>✓ Covers Leeds and surrounding areas</li>
+        </ul>
+      </div>
+      <div><h2 style="font-size:22px;margin-bottom:12px">Check availability & book</h2>
+        <div class="card" id="bookcard" style="padding:16px"></div>
+      </div>
+    </div>
+  </div></section>`;
+}
+function renderCalendar(castleId){
+  const c=byId(castleId); const card=document.getElementById('bookcard'); if(!card)return;
+  if(c.pricePence==null){card.innerHTML='<p style="font-weight:800">Online booking coming soon for this one.</p><p class="muted">Give us a call on 07769 781666 and we\'ll book you in.</p>';return;}
+  const [Y,M]=calMonth.split('-').map(Number);
+  const first=new Date(Y,M-1,1); const blanks=(first.getDay()+6)%7; const dim=new Date(Y,M,0).getDate();
+  const thisMonth=todayKey().slice(0,7);
+  let cells='';
+  for(let i=0;i<blanks;i++)cells+='<div></div>';
+  for(let d=1;d<=dim;d++){
+    const key=Y+'-'+String(M).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const a=dayAvail(castleId,key); const sel=selDate===key;
+    const cls=sel?'day sel':(a.available?'day avail':'day off');
+    cells+=`<button class="${cls}" ${a.available?'':'disabled'} title="${a.available?'Available':esc(a.reason)}" onclick="pickDate('${castleId}','${key}')">${d}</button>`;
+  }
+  const dows=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>'<div class="dow">'+x+'</div>').join('');
+  const label=first.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  card.innerHTML=`
+    <div class="calhead">
+      <button class="calnav" ${calMonth<=thisMonth?'disabled':''} onclick="moveMonth('${castleId}',-1)">‹</button>
+      <strong style="font-family:'Baloo 2';font-size:18px">${label}</strong>
+      <button class="calnav" onclick="moveMonth('${castleId}',1)">›</button>
+    </div>
+    <div class="cal">${dows}${cells}</div>
+    <div class="legend"><span><i style="background:rgba(61,214,140,.4)"></i>Available</span><span><i style="background:rgba(0,0,0,.1)"></i>Unavailable</span></div>
+    <div id="bookform"></div>`;
+  if(selDate)renderForm(castleId);
+}
+function moveMonth(castleId,dir){const [Y,M]=calMonth.split('-').map(Number);const d=new Date(Y,M-1+dir,1);calMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');renderCalendar(castleId);}
+function pickDate(castleId,key){selDate=key;renderCalendar(castleId);document.getElementById('bookform').scrollIntoView({behavior:'smooth',block:'nearest'});}
+function renderForm(castleId){
+  const c=byId(castleId); const f=document.getElementById('bookform');
+  f.innerHTML=`<div style="border-top:1px solid rgba(0,0,0,.08);margin-top:14px;padding-top:14px;background:rgba(141,114,225,.05);border-radius:14px;padding:14px">
+    <p style="font-weight:800">Booking <span style="color:var(--purple)">${esc(c.name)}</span> for <span style="color:var(--purple)">${fmtDate(selDate)}</span></p>
+    <div class="formgrid" style="margin-top:10px">
+      <div><label>Your name *</label><input id="f_name" value="Test Customer"/></div>
+      <div><label>Phone *</label><input id="f_phone" value="07700 900123"/></div>
+      <div class="full"><label>Email *</label><input id="f_email" value="you@example.com"/></div>
+      <div><label>Delivery postcode *</label><input id="f_pc" value="LS6 1AB"/></div>
+      <div><label>Address *</label><input id="f_addr" value="1 Test Street, Leeds"/></div>
+      <div class="full"><label>Preferred delivery time</label><select id="f_time">${DELIVERY_TIMES.map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('')}</select><p class="muted" style="font-size:12px;margin-top:4px">Full-day hire — we'll aim for your preferred time and confirm the day before.</p></div>
+      <div class="full"><label>Notes</label><input id="f_notes" placeholder="Surface (grass/hard), access…"/></div>
+    </div>
+    <div id="f_err"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:12px;justify-content:center" onclick="payDemo('${castleId}')">Pay &amp; book — ${gbp(c.pricePence)} (demo)</button>
+    <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">Demo only — no card is charged. In the real site this is secure Stripe payment.</p>
+  </div>`;
+}
+function payDemo(castleId){
+  const c=byId(castleId); const g=id=>document.getElementById(id).value.trim();
+  const name=g('f_name'),phone=g('f_phone'),email=g('f_email'),pc=g('f_pc'),addr=g('f_addr');
+  const deliveryTime=document.getElementById('f_time').value;
+  const err=document.getElementById('f_err');
+  if(!name||!phone||!email||!pc||!addr){err.innerHTML='<div class="err">Please fill in all required fields.</div>';return;}
+  if(!covered(pc)){err.innerHTML='<div class="err">Sorry, that postcode is outside our delivery area (demo accepts LS… postcodes).</div>';return;}
+  // re-validate (race-safe gate, same as server)
+  const a=dayAvail(castleId,selDate);
+  if(!a.available){err.innerHTML='<div class="err">Sorry, that date was just taken: '+esc(a.reason)+'. Pick another.</div>';renderCalendar(castleId);return;}
+  const id='b'+Date.now();
+  state.bookings.push({id,castleId,date:selDate,status:'paid',customerName:name,email,phone,postcode:pc,address:addr,deliveryTime,totalPence:c.pricePence});
+  save();
+  location.hash='#/confirm/'+id;
+}
+function viewConfirm(id){
+  const b=state.bookings.find(x=>x.id===id); const c=b&&byId(b.castleId);
+  if(!b)return '<div class="wrap section">Booking not found.</div>';
+  return `<section class="section"><div class="wrap" style="max-width:560px;text-align:center">
+    <div style="width:64px;height:64px;border-radius:999px;background:rgba(61,214,140,.2);display:grid;place-items:center;font-size:30px;margin:0 auto">🎉</div>
+    <h1 style="font-size:34px;margin-top:14px">You're all booked!</h1>
+    <p class="muted" style="margin-top:8px">In the real site a confirmation email goes to the customer and the owner now.</p>
+    <div class="card" style="padding:20px;margin-top:22px;text-align:left">
+      ${row('Inflatable',esc(c.name))}${row('Date',fmtDate(b.date))}${b.deliveryTime?row('Preferred time',esc(b.deliveryTime)):''}${row('Delivery to',esc(b.address)+', '+esc(b.postcode))}${row('Total paid',gbp(b.totalPence))}${row('Booking ref',id.slice(-8).toUpperCase())}
+      <div class="ok" style="margin-top:12px">Confirmed & paid. This date is now blocked on the calendar — try booking it again to see the protection work.</div>
+    </div>
+    <div style="margin-top:22px;display:flex;gap:10px;justify-content:center">
+      <a class="btn btn-ghost" href="#/castle/${c.slug}">Back to ${esc(c.name)}</a>
+      <a class="btn btn-primary" href="#/admin">See it in admin</a>
+    </div>
+  </div></section>`;
+}
+function row(k,v){return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(0,0,0,.05)"><span class="muted" style="font-size:13px">'+k+'</span><strong>'+v+'</strong></div>';}
+
+/* ---------- ADMIN ---------- */
+function viewAdmin(tab){
+  tab=tab||'bookings';
+  const t=(k,l)=>`<a class="${tab===k?'on':''}" href="#/admin/${k}">${l}</a>`;
+  let body='';
+  if(tab==='bookings')body=adminBookings();
+  else if(tab==='inflatables')body=adminInflatables();
+  else if(tab==='blackouts')body=adminBlackouts();
+  else if(tab==='settings')body=adminSettings();
+  return `<section class="section"><div class="wrap">
+    <h2 style="font-size:30px">Owner Admin <span class="muted" style="font-size:15px">(demo)</span></h2>
+    <p class="muted">Everything the owner can manage without touching code. Changes here instantly affect the public calendar.</p>
+    <div class="tabs">${t('bookings','Bookings')}${t('inflatables','Inflatables')}${t('blackouts','Blackout dates')}${t('settings','Settings')}</div>
+    ${body}
+  </div></section>`;
+}
+function adminBookings(){
+  const t=todayKey();
+  const up=state.bookings.filter(b=>b.status==='paid').length;
+  const rev=state.bookings.filter(b=>b.status==='paid').reduce((s,b)=>s+b.totalPence,0);
+  const rows=[...state.bookings].sort((a,b)=>a.date<b.date?1:-1).map(b=>{
+    const c=byId(b.castleId);
+    return `<tr><td><strong>${fmtDate(b.date)}</strong>${b.deliveryTime?'<br><span class="muted" style="font-size:12px">'+esc(b.deliveryTime)+'</span>':''}</td><td>${esc(c?c.name:'?')}</td><td>${esc(b.customerName)}<br><span class="muted" style="font-size:12px">${esc(b.phone)}</span></td><td>${esc(b.postcode)}</td><td>${gbp(b.totalPence)}</td><td><span class="tag ${b.status}">${b.status}</span></td><td>${b.status!=='cancelled'?'<button class="link" style="color:#dc2626" onclick="cancelB(\''+b.id+'\')">Cancel</button>':''}</td></tr>`;
+  }).join('');
+  return `<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:18px">
+      <div class="card stat"><div class="muted" style="font-size:13px">Paid bookings</div><div class="n">${up}</div></div>
+      <div class="card stat"><div class="muted" style="font-size:13px">Total revenue</div><div class="n">${gbp(rev)}</div></div>
+      <div class="card stat"><div class="muted" style="font-size:13px">Active castles</div><div class="n">${state.inflatables.filter(c=>c.active).length}</div></div>
+      <div class="card stat"><div class="muted" style="font-size:13px">Blackout dates</div><div class="n">${state.blackouts.length}</div></div>
+    </div>
+    <div class="card" style="padding:14px;overflow-x:auto"><table><thead><tr><th>Date</th><th>Inflatable</th><th>Customer</th><th>Postcode</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan=7 class="muted">No bookings yet.</td></tr>'}</tbody></table></div>
+    <p class="muted" style="font-size:12px;margin-top:8px">Cancelling frees the date immediately (try it, then check the calendar).</p>`;
+}
+function cancelB(id){const b=state.bookings.find(x=>x.id===id);if(b){b.status='cancelled';save();render();}}
+function adminInflatables(){
+  const rows=state.inflatables.map(c=>`<tr><td><strong>${esc(c.name)}</strong> ${c.active?'':'<span class="tag cancelled">inactive</span>'} ${c.pricePence==null?'<span class="tag held">price not set</span>':''}</td><td>${gbp(c.pricePence)}</td><td>${esc(c.theme||'—')}</td><td><button class="link" onclick="toggleC('${c.id}')">${c.active?'Deactivate':'Activate'}</button></td></tr>`).join('');
+  return `<div class="card" style="padding:14px;overflow-x:auto"><table><thead><tr><th>Name</th><th>Price/day</th><th>Theme</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+  <p class="muted" style="font-size:12px;margin-top:8px">In the full site you also add/edit names, prices, descriptions and photos here. Deactivating hides a castle from the site.</p>`;
+}
+function toggleC(id){const c=byId(id);if(c){c.active=!c.active;save();render();}}
+function adminBlackouts(){
+  const t=todayKey();
+  const list=[...state.blackouts].sort().map(d=>`<div class="card" style="padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>${fmtDate(d)}</strong><button class="link" style="color:#dc2626" onclick="rmBlackout('${d}')">Remove</button></div>`).join('')||'<p class="muted">No blackout dates.</p>';
+  return `<div style="display:grid;gap:24px;grid-template-columns:1fr 1fr" class="detailgrid">
+    <div><h3 style="font-size:18px">Block out a date</h3><p class="muted" style="font-size:14px;margin:6px 0 12px">Blacked-out days are unbookable for every castle.</p>
+      <div class="card" style="padding:16px"><label>Date</label><input type="date" id="bo_date" min="${t}"/><button class="btn btn-primary" style="margin-top:12px" onclick="addBlackout()">Block this date</button></div></div>
+    <div><h3 style="font-size:18px">Upcoming blackout dates</h3><div style="margin-top:12px">${list}</div></div>
+  </div>`;
+}
+function addBlackout(){const v=document.getElementById('bo_date').value;if(v&&!state.blackouts.includes(v)){state.blackouts.push(v);save();render();}}
+function rmBlackout(d){state.blackouts=state.blackouts.filter(x=>x!==d);save();render();}
+function adminSettings(){
+  const s=state.settings;
+  return `<div class="card" style="padding:20px;max-width:560px">
+    <label>Max deliveries per day (the "one van" rule)</label>
+    <input type="number" min="1" id="s_max" value="${s.maxDeliveriesPerDay}" style="width:120px"/>
+    <p class="muted" style="font-size:12px;margin:4px 0 16px">When this many bookings exist on a date, that date becomes unavailable for ALL castles. Set to 1 and book one castle — every other castle is blocked that day too.</p>
+    <label>Minimum lead time (days)</label>
+    <input type="number" min="0" id="s_lead" value="${s.minLeadTimeDays}" style="width:120px"/>
+    <p class="muted" style="font-size:12px;margin:4px 0 16px">0 = same-day allowed. 1 = bookable from tomorrow.</p>
+    <label>Delivery postcode prefixes</label>
+    <input id="s_pc" value="${s.prefixes.join(', ')}"/>
+    <p class="muted" style="font-size:12px;margin:4px 0 16px">Comma separated, e.g. LS, WF. Blank = anywhere.</p>
+    <div id="s_ok"></div>
+    <button class="btn btn-primary" onclick="saveSettings()">Save settings</button>
+  </div>`;
+}
+function saveSettings(){
+  state.settings.maxDeliveriesPerDay=Math.max(1,parseInt(document.getElementById('s_max').value)||1);
+  state.settings.minLeadTimeDays=Math.max(0,parseInt(document.getElementById('s_lead').value)||0);
+  state.settings.prefixes=document.getElementById('s_pc').value.split(',').map(x=>x.trim().toUpperCase()).filter(Boolean);
+  save();
+  document.getElementById('s_ok').innerHTML='<div class="ok" style="margin-bottom:10px">Saved — the public calendar now reflects this.</div>';
+}
+
+/* ---------- router ---------- */
+function render(){
+  const h=location.hash.replace(/^#/,'')||'/';
+  const parts=h.split('/').filter(Boolean);
+  let html;
+  if(parts.length===0)html=viewHome();
+  else if(parts[0]==='castles')html=viewCastles();
+  else if(parts[0]==='castle')html=viewCastle(parts[1]);
+  else if(parts[0]==='confirm')html=viewConfirm(parts[1]);
+  else if(parts[0]==='admin')html=viewAdmin(parts[1]);
+  else html=viewHome();
+  document.getElementById('app').innerHTML=html;
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',render);
+render();
+// responsive: collapse detail grid on small screens
+const mq=matchMedia('(max-width:760px)');
+function resp(){document.querySelectorAll('.detailgrid').forEach(e=>e.style.gridTemplateColumns=mq.matches?'1fr':'1fr 1fr');}
+mq.addEventListener('change',resp);new MutationObserver(resp).observe(document.getElementById('app'),{childList:true});
+</script>
+</body>
+</html>

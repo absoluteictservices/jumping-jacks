@@ -1,0 +1,89 @@
+// Jumping Jacks Leeds — data model
+// All booking/availability state lives here. The client is never trusted.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum BookingStatus {
+  held
+  paid
+  cancelled
+}
+
+model Inflatable {
+  id             String    @id @default(cuid())
+  name           String
+  slug           String    @unique
+  description    String
+  theme          String? // e.g. "Superhero", "Princess", "Disco"
+  dimensions     String? // free text e.g. "12ft x 12ft"
+  ageSuitability String? // free text e.g. "Up to 12 years"
+  // pricePerDay is in pence. NULL = "Call to book" (price not yet set).
+  pricePerDay    Int?
+  images         String[]  @default([])
+  active         Boolean   @default(true)
+  sortOrder      Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  bookings       Booking[]
+
+  @@index([active, sortOrder])
+}
+
+model Booking {
+  id                    String        @id @default(cuid())
+  inflatable            Inflatable    @relation(fields: [inflatableId], references: [id], onDelete: Restrict)
+  inflatableId          String
+  // The hire date, stored as a UTC midnight DateTime representing a calendar day.
+  date                  DateTime      @db.Date
+  status                BookingStatus @default(held)
+  customerName          String
+  email                 String
+  phone                 String
+  deliveryAddress       String
+  deliveryPostcode      String
+  // Customer's preferred delivery/setup time (a slot label). Hire is still a
+  // full day — this is a preference recorded for the owner, not a hard slot.
+  deliveryTime          String?
+  notes                 String?
+  totalPence            Int
+  stripeCheckoutId      String?       @unique
+  stripePaymentIntentId String?       @unique
+  holdExpiresAt         DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  // A given inflatable can only have ONE active (held/paid) booking per date.
+  // Enforced in application logic + this partial-uniqueness is also guarded by
+  // a conditional unique index created in a migration (see README).
+  @@index([date, status])
+  @@index([inflatableId, date, status])
+  @@index([holdExpiresAt])
+}
+
+model BlackoutDate {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  reason    String?
+  createdAt DateTime @default(now())
+}
+
+// Single-row settings table (id is always "singleton").
+model Settings {
+  id                      String   @id @default("singleton")
+  maxDeliveriesPerDay     Int      @default(1)
+  minLeadTimeDays         Int      @default(1)
+  deliveryPostcodePrefixes String[] @default([])
+  companyEmail            String   @default("info@jumpingjacksleeds.co.uk")
+  companyPhone            String   @default("07769781666")
+  holdMinutes             Int      @default(15)
+  cancellationPolicy      String   @default("")
+  updatedAt               DateTime @updatedAt
+}
