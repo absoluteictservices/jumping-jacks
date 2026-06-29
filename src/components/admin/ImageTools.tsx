@@ -2,6 +2,35 @@
 
 import { useState, type ChangeEvent } from "react";
 
+const GRADS = [
+  "linear-gradient(135deg,#FF5DA2,#FFD23F)",
+  "linear-gradient(135deg,#34C6F4,#8D72E1)",
+  "linear-gradient(135deg,#8D72E1,#FF5DA2)",
+  "linear-gradient(135deg,#3DD68C,#34C6F4)",
+  "linear-gradient(135deg,#FFD23F,#FF5DA2)",
+  "linear-gradient(135deg,#6C4AB6,#34C6F4)",
+];
+
+/** Small square thumbnail: shows the photo, or a colourful initial if missing/broken. */
+export function Thumb({ name, image, index = 0 }: { name: string; image?: string; index?: number }) {
+  const [ok, setOk] = useState(Boolean(image));
+  return (
+    <div
+      className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl ring-1 ring-black/5 sm:h-20 sm:w-20"
+      style={{ background: GRADS[index % GRADS.length] }}
+    >
+      {image && ok ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={image} alt="" className="h-full w-full object-cover" onError={() => setOk(false)} />
+      ) : (
+        <span className="absolute inset-0 grid place-items-center font-display text-2xl font-extrabold text-white">
+          {name.charAt(0).toUpperCase()}
+        </span>
+      )}
+    </div>
+  );
+}
+
 /**
  * Photo manager for the inflatable admin form. Uploads images to Vercel Blob via
  * /api/admin/upload and keeps the list in a hidden field named "images" (newline
