@@ -1,5 +1,6 @@
 import { saveInflatable } from "../actions";
 import { formatGBP } from "@/lib/money";
+import { ImagesField } from "@/components/admin/ImageTools";
 
 type InflatableData = {
   id: string;
@@ -35,12 +36,7 @@ export function InflatableForm({ inflatable }: { inflatable?: InflatableData }) 
         <Field label="Price per day (£)" name="pricePerDay" defaultValue={i?.pricePerDay != null ? (i.pricePerDay / 100).toString() : ""} placeholder="Leave blank for 'Call to book'" />
       </div>
 
-      <div>
-        <label className="block text-sm font-bold text-brand-ink/80" htmlFor="images">Image URLs (one per line)</label>
-        <textarea id="images" name="images" rows={3} defaultValue={i?.images.join("\n")}
-          placeholder="https://…/spiderman-1.jpg" className="mt-1 w-full rounded-xl border border-black/10 px-3 py-2 font-mono text-xs" />
-        <p className="mt-1 text-xs text-brand-ink/50">Paste hosted image URLs. No images = a colourful placeholder is shown.</p>
-      </div>
+      <ImagesField defaultImages={i?.images ?? []} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Sort order" name="sortOrder" type="number" defaultValue={String(i?.sortOrder ?? 0)} />

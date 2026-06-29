@@ -2,7 +2,7 @@
 
 A fast, mobile-first marketing site with a working online booking system for
 **Jumping Jacks**, a Leeds bouncy castle hire business. Customers pick an
-inflatable, choose an available date, pay in full via Stripe, and get a 
+inflatable, choose an available date, pay in full via Stripe, and get a
 confirmation email. The owner manages everything from `/admin` — no code needed.
 
 Built with **Next.js (App Router, TypeScript)**, **Prisma + Postgres**,

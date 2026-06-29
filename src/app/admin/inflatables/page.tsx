@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatGBP } from "@/lib/money";
 import { toggleInflatable, seedCatalogue } from "../actions";
+import { MigrateButton } from "@/components/admin/ImageTools";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,11 @@ export default async function AdminInflatables() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl">Inflatables</h2>
         <Link href="/admin/inflatables/new" className="btn-primary !py-2 text-sm">+ Add inflatable</Link>
+      </div>
+
+      <div className="mt-3 rounded-2xl bg-brand-violet/5 p-4">
+        <p className="text-sm text-brand-ink/70">Photos are now hosted on your own site (not WordPress). Click below once to copy your existing photos across — after that, edit any castle to upload new photos directly.</p>
+        <div className="mt-2"><MigrateButton /></div>
       </div>
 
       <div className="mt-4 grid gap-3">
