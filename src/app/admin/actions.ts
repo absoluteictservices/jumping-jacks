@@ -146,7 +146,7 @@ function settingsFromForm(formData: FormData) {
       .map((s) => s.trim().toUpperCase())
       .filter(Boolean),
     companyEmail: String(formData.get("companyEmail") ?? "").trim() || "info@jumpingjacksleeds.co.uk",
-    companyPhone: String(formData.get("companyPhone") ?? "").trim() || "07769781666",
+    companyPhone: String(formData.get("companyPhone") ?? "").trim() || "07902489821",
     cancellationPolicy: String(formData.get("cancellationPolicy") ?? "").trim(),
     companyAddress: String(formData.get("companyAddress") ?? "").trim(),
   };
