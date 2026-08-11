@@ -6,7 +6,7 @@ export const DEFAULT_SETTINGS = {
   minLeadTimeDays: 1,
   deliveryPostcodePrefixes: ["LS"] as string[],
   companyEmail: "info@jumpingjacksleeds.co.uk",
-  companyPhone: "07769781666",
+  companyPhone: "07902489821",
   holdMinutes: 15,
   cancellationPolicy: "",
   companyAddress: "",

@@ -5,8 +5,8 @@ export const SITE = {
   tagline: "Fun Bouncy Castle Hire in Leeds",
   description:
     "Friendly, affordable and reliable bouncy castle hire across Leeds and surrounding areas. Clean, safe, well-presented inflatables delivered and set up for you. Book online in minutes.",
-  phone: "07769781666",
-  phoneDisplay: "07769 781666",
+  phone: "07902489821",
+  phoneDisplay: "07902 489 821",
   email: "info@jumpingjacksleeds.co.uk",
   areaServed: "Leeds and surrounding areas",
   yearsExperience: 13,

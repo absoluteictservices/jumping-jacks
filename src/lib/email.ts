@@ -8,7 +8,7 @@ const FROM = process.env.EMAIL_FROM ?? "Jumping Jacks Leeds <bookings@jumpingjac
 const OWNER = process.env.OWNER_EMAIL ?? "info@jumpingjacksleeds.co.uk";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jumpingjacksleeds.co.uk";
 const LOGO = `${SITE_URL}/logo.png`;
-const PHONE_DISPLAY = "07769 781666";
+const PHONE_DISPLAY = "07902 489 821";
 
 export interface BookingEmailData {
   customerName: string;
@@ -51,7 +51,7 @@ const shell = (preheader: string, inner: string) => `
           ${inner}
         </td></tr>
         <tr><td style="background:#1F1147;padding:18px 24px;text-align:center;color:#ffffff;opacity:.9;font-size:12px;">
-          Jumping Jacks Leeds &nbsp;·&nbsp; <a href="tel:07769781666" style="color:#FFD23F;text-decoration:none;">${PHONE_DISPLAY}</a> &nbsp;·&nbsp; <a href="${SITE_URL}" style="color:#FFD23F;text-decoration:none;">jumpingjacksleeds.co.uk</a>
+          Jumping Jacks Leeds &nbsp;·&nbsp; <a href="tel:07902489821" style="color:#FFD23F;text-decoration:none;">${PHONE_DISPLAY}</a> &nbsp;·&nbsp; <a href="${SITE_URL}" style="color:#FFD23F;text-decoration:none;">jumpingjacksleeds.co.uk</a>
         </td></tr>
       </table>
     </td></tr>
@@ -102,7 +102,7 @@ export async function sendCustomerConfirmation(d: BookingEmailData) {
       <p>Thanks for booking with Jumping Jacks — your bouncy castle hire is <strong>confirmed and paid in full</strong>.</p>
       ${detailsCard(bookingRows(d))}
       <p>We'll deliver and set up in the morning and collect in the evening, and we'll be in touch the day before to confirm a delivery window.</p>
-      <p>Any questions? Just reply to this email or call us on <a href="tel:07769781666" style="color:#6C4AB6;font-weight:bold;text-decoration:none;">${PHONE_DISPLAY}</a>.</p>
+      <p>Any questions? Just reply to this email or call us on <a href="tel:07902489821" style="color:#6C4AB6;font-weight:bold;text-decoration:none;">${PHONE_DISPLAY}</a>.</p>
       <p style="margin-top:18px;">See you soon,<br/><strong>The Jumping Jacks team</strong></p>
     `,
     ),
